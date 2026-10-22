@@ -221,91 +221,34 @@ h1, h2 {
     opacity: 0.85;
 }
 
-/* Powerwall card: 2x2 grid of battery, solar, home and grid, top right. */
-.pw-card {
-    position: absolute;
-    top: 62px;
-    right: 220px;
-    width: 600px;
-    height: 262px;
-    padding: 14px;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    column-gap: 12px;
-    row-gap: 12px;
-    border-radius: 26px;
-    background: rgba(14, 18, 28, 0.72);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 18px 40px rgba(0, 0, 0, 0.35);
-}
-
-.pw-card.hidden { display: none; }
-.pw-card.stale { opacity: 0.55; }
-
-.pw-cell {
-    position: relative;
-    padding: 10px 18px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    overflow: hidden;
-}
-
-.pw-head {
-    display: flex;
+/* Powerwall: a quiet battery symbol and percentage to the right of the clock. */
+.pw-inline {
+    display: inline-flex;
     align-items: center;
-    height: 24px;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.pw-head svg {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.pw-head .pw-batt {
-    width: 34px;
-    height: 20px;
-}
-
-.pw-value {
-    margin-top: 2px;
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.5px;
-}
-
-.pw-value small {
-    font-size: 22px;
-    font-weight: 600;
+    margin-left: 44px;
+    font-size: 34px;
+    font-weight: 500;
     letter-spacing: 0;
-    opacity: 0.75;
-}
-
-.pw-sub {
-    font-size: 18px;
-    line-height: 1.25;
     color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
+    top: -10px;
 }
 
-.pw-battery .pw-head, .pw-battery .pw-value { color: #4ade80; }
-.pw-card.low .pw-battery .pw-head, .pw-card.low .pw-battery .pw-value { color: #f87171; }
-.pw-solar .pw-head, .pw-solar .pw-value { color: #fbbf24; }
-.pw-home .pw-head, .pw-home .pw-value { color: #7cb7ff; }
-.pw-grid .pw-head, .pw-grid .pw-value { color: #c4b5fd; }
-.pw-grid.export .pw-head, .pw-grid.export .pw-value { color: #4ade80; }
+.pw-inline.hidden { display: none; }
+.pw-inline.stale { opacity: 0.5; }
 
-/* With the Powerwall card showing, the Santa pill moves next to the clock. */
-.has-energy .santa-pill { right: 852px; }
+.pw-inline .pw-batt {
+    width: 46px;
+    height: 26px;
+    margin-right: 12px;
+}
+
+.pw-inline .pw-bolt {
+    width: 22px;
+    height: 22px;
+    margin-left: 8px;
+}
 
 /* Appearance options */
 .no-date #date { display: none; }

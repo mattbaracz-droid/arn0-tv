@@ -1,5 +1,5 @@
 /*
- * Tesla Powerwall card on Home: battery %, solar, home and grid, read from a pypowerwall
+ * Powerwall battery beside the clock on Home (symbol and %), read from a pypowerwall
  * proxy on the local network (the TV cannot talk to the gateway itself: it only serves HTTPS
  * with a self-signed certificate, and its data needs the gateway password).
  *
@@ -85,65 +85,22 @@
 
     // ---------- Drawing
 
-    function kw(w) {
-        var v = Math.abs(w) / 1000;
-        return (v < 0.05 ? '0.0' : v.toFixed(1)) + '<small> kW</small>';
-    }
-
-    var ICONS = {
-        solar: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-        home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
-        grid: '<path d="M8 2l-3 20M16 2l3 20M6 8h12M5 14h14M12 2v20"/>'
-    };
-
-    function icon(name) {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
-            'stroke-linecap="round" stroke-linejoin="round">' + ICONS[name] + '</svg>';
-    }
-
     function batteryIcon(pct) {
         var w = Math.round(17 * pct / 100);
         return '<svg viewBox="0 0 28 16" class="pw-batt"><rect x="1" y="1" width="23" height="14" rx="3" ' +
-            'fill="none" stroke="currentColor" stroke-width="2"/><rect x="25" y="5" width="2.5" height="6" rx="1" ' +
+            'fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="25" y="5" width="2.5" height="6" rx="1" ' +
             'fill="currentColor"/><rect x="4" y="4" width="' + Math.max(w, 1) + '" height="8" rx="1.5" fill="currentColor"/></svg>';
     }
 
-    function clockTime(ts) {
-        var d = new Date(ts);
-        var t = window.Appearance ? Appearance.time(d) : { time: d.getHours() + ':' + d.getMinutes(), suffix: '' };
-        return t.time + (t.suffix ? ' ' + t.suffix : '');
-    }
+    var BOLT = '<svg viewBox="0 0 24 24" class="pw-bolt" fill="currentColor"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
 
+    // Just the battery: symbol, percentage, and a small bolt while it charges.
     function render(x) {
         if (!el || !x) return;
         var stale = Date.now() - x.at > STALE_MS;
         var pct = Math.round(x.pct);
-        var battState = x.battery < -50 ? 'Charging ' + (Math.abs(x.battery) / 1000).toFixed(1) + ' kW'
-            : x.battery > 50 ? 'Powering home ' + (x.battery / 1000).toFixed(1) + ' kW' : 'Idle';
-        var gridState = x.grid < -50 ? 'Exporting' : x.grid > 50 ? 'Importing' : 'Idle';
-        el.className = 'pw-card' + (stale ? ' stale' : '') + (pct <= 20 ? ' low' : '');
-        el.innerHTML =
-            '<div class="pw-cell pw-battery">' +
-                '<div class="pw-head">' + batteryIcon(pct) + '<span>Powerwall</span></div>' +
-                '<div class="pw-value">' + pct + '<small>%</small></div>' +
-                '<div class="pw-sub">' + (stale ? 'Last seen ' + clockTime(x.at) : battState) + '</div>' +
-            '</div>' +
-            '<div class="pw-cell pw-solar">' +
-                '<div class="pw-head">' + icon('solar') + '<span>Solar</span></div>' +
-                '<div class="pw-value">' + kw(x.solar) + '</div>' +
-                '<div class="pw-sub">' + (x.solar > 50 ? 'Generating' : 'Not generating') + '</div>' +
-            '</div>' +
-            '<div class="pw-cell pw-home">' +
-                '<div class="pw-head">' + icon('home') + '<span>Home</span></div>' +
-                '<div class="pw-value">' + kw(x.home) + '</div>' +
-                '<div class="pw-sub">Using now</div>' +
-            '</div>' +
-            '<div class="pw-cell pw-grid' + (x.grid < -50 ? ' export' : '') + '">' +
-                '<div class="pw-head">' + icon('grid') + '<span>Grid</span></div>' +
-                '<div class="pw-value">' + kw(x.grid) + '</div>' +
-                '<div class="pw-sub">' + gridState + '</div>' +
-            '</div>';
-        document.getElementById('home').classList.add('has-energy');
+        el.className = 'pw-inline' + (stale ? ' stale' : '');
+        el.innerHTML = batteryIcon(pct) + '<span>' + pct + '%</span>' + (x.battery < -50 && !stale ? BOLT : '');
     }
 
     function readCache() {
