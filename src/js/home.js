@@ -164,11 +164,21 @@
         renderHome();
     }
 
+    var LIVE_TV = { kind: 'livetv', label: 'Live TV', brand: { bg: '#1d2b4a', fg: '#fff', text: 'LIVE TV' } };
+
+    function openLiveTv() {
+        UI.toast('Switching to Live TV…');
+        runLogged('Live TV (aerial) + viewer', Inputs.openTv()).catch(function (err) {
+            UI.toast('Could not open Live TV: ' + DevLog.errorText(err));
+        });
+    }
+
     function renderHome() {
         var row = $('apps-row');
         row.innerHTML = '';
         var items = homeItems();
         if (!items.length) items = Apps.allSorted(state.apps, false).slice(0, 8);
+        if (cfg.liveTv) row.appendChild(appTile(LIVE_TV));
         items.forEach(function (item) { row.appendChild(appTile(item)); });
         row.appendChild(allAppsTile());
 
@@ -211,7 +221,8 @@
         var actions = [
             { label: 'Send installed app list to log', run: labDumpApps },
             { label: 'Read inputs', run: labReadInputs },
-            { label: 'Open Samsung TV viewer only', run: function () { runLogged('Open TV viewer', Inputs.openViewer()); } }
+            { label: 'Open Samsung TV viewer only', run: function () { runLogged('Open TV viewer', Inputs.openViewer()); } },
+            { label: 'Live TV: switch to aerial + viewer', run: openLiveTv }
         ];
         if (window.Sound) actions = actions.concat(Sound.actions());
         if (window.RenderProbe) actions = actions.concat(RenderProbe.actions());
@@ -413,6 +424,7 @@
             activate: function (item) {
                 if (item.kind === 'app') launchApp(item);
                 else if (item.kind === 'all') UI.show('all');
+                else if (item.kind === 'livetv') openLiveTv();
                 else if (item.kind === 'input') openInput(item);
                 else if (item.kind === 'settings') UI.show('settings');
             },

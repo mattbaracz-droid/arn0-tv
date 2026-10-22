@@ -75,7 +75,19 @@
         });
     }
 
+    // The aerial: VIDEOSOURCE reports the tuner as type 'TV'. Switch to it, then hand over to
+    // Samsung's viewer so channels, the guide and the number keys behave as normal.
+    function openTv() {
+        return sources().then(function (info) {
+            var all = (info.connected || []).concat(info.disconnected || []);
+            var src = all.find(function (s) { return s.type === 'TV'; });
+            if (!src) throw new Error('the TV did not report an aerial (TV) source');
+            return setSource(src);
+        }).then(openViewer);
+    }
+
     window.Inputs = {
+        openTv: openTv,
         sources: sources,
         hdmiStatus: hdmiStatus,
         current: current,

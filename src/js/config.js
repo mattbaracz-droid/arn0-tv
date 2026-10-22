@@ -23,6 +23,9 @@ window.LAUNCHER_CONFIG = {
         { id: '73iTZRTc34.Stan', label: 'Stan' }
     ],
 
+    // Live TV tile at the start of the apps row: switches to the aerial and opens Samsung's viewer.
+    liveTv: true,
+
     // Nothing on HDMI on this TV, so the consoles row stays hidden.
     inputs: [],
 
