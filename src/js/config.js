@@ -23,6 +23,24 @@ window.LAUNCHER_CONFIG = {
         { id: '73iTZRTc34.Stan', label: 'Stan' }
     ],
 
+    // Weather beside the date (Open-Meteo, free, no key). null hides it.
+    weather: { latitude: -33.87, longitude: 151.21 },
+
+    /*
+     * Plex "Continue watching" row (On Deck from your Plex Media Server). Leave server or token
+     * empty to hide it. server: 'http://<server-ip>:32400'. token: your X-Plex-Token — in Plex
+     * Web, open any item, ⋯ → Get Info → View XML; the token is at the end of that page's URL.
+     */
+    plex: { server: '', token: '', appId: 'kIciSQlYEM.plex', max: 12 },
+
+    /*
+     * Art Mode tile (The Frame). Tried in order; the first id that launches is remembered.
+     * Use Lab → "Find Art Mode apps" to see what this TV actually has, then put the right id first.
+     */
+    artMode: {
+        appIds: ['org.tizen.art-app', 'com.samsung.tv.art-app', 'com.samsung.tv.ambient-support']
+    },
+
     // Live TV tile at the start of the apps row: switches to the aerial and opens Samsung's viewer.
     liveTv: true,
 

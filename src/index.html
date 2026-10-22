@@ -13,7 +13,10 @@
         <section id="home" class="view">
             <header class="clock">
                 <div id="time"><span id="time-main"></span><span id="time-suffix"></span></div>
-                <div id="date"></div>
+                <div class="date-line">
+                    <div id="date"></div>
+                    <div id="weather" class="weather hidden"></div>
+                </div>
             </header>
             <div id="gear" class="gear">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -24,6 +27,10 @@
             <div id="apps-section" class="shelf">
                 <h2>Apps</h2>
                 <div class="row-viewport"><div id="apps-row" class="row-track"></div></div>
+            </div>
+            <div id="plex-section" class="shelf hidden">
+                <h2>Continue watching</h2>
+                <div class="row-viewport"><div id="plex-row" class="row-track"></div></div>
             </div>
             <div id="inputs-section" class="shelf">
                 <h2>Consoles</h2>
@@ -164,6 +171,8 @@
     <script src="js/ui.js"></script>
     <script src="js/render-probe.js"></script>
     <script src="js/screensaver.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/plex.js"></script>
     <script src="js/home.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/runner-game.js"></script>

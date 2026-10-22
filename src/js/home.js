@@ -164,6 +164,108 @@
         renderHome();
     }
 
+    // ---------- Plex: Continue watching
+
+    function plexTile(item) {
+        var wrap = el('div', 'app cw');
+        var tile = el('div', 'tile');
+        tile.style.background = 'hsl(' + hue(item.label) + ',28%,22%)';
+        var mono = el('div', 'mono', initials(item.label).toUpperCase());
+        tile.appendChild(mono);
+        if (item.image) {
+            var img = new Image();
+            img.className = 'cw-still';
+            img.onload = function () {
+                mono.style.display = 'none';
+                tile.insertBefore(img, tile.firstChild);
+            };
+            img.src = item.image;
+        }
+        if (item.progress > 0.01) {
+            var bar = el('div', 'cw-bar');
+            var fill = el('div', 'cw-fill');
+            fill.style.width = Math.round(item.progress * 100) + '%';
+            bar.appendChild(fill);
+            tile.appendChild(bar);
+        }
+        wrap.appendChild(tile);
+        wrap.appendChild(el('div', 'label', item.label));
+        if (item.sub) wrap.appendChild(el('div', 'cw-sub', item.sub));
+        wrap._item = item;
+        return wrap;
+    }
+
+    function renderPlex(items) {
+        var row = $('plex-row');
+        var focusedKey = null;
+        var f = row.querySelector('.focused');
+        if (f) focusedKey = f._item.key;
+        row.innerHTML = '';
+        UI.resetScroll(row);
+        items.forEach(function (item) { row.appendChild(plexTile(item)); });
+        var has = items.length > 0;
+        $('plex-section').classList.toggle('hidden', !has);
+        // Two shelves fit under the clock; Continue watching takes the second one.
+        $('home').classList.toggle('has-plex', has);
+        if (UI.isVisible('home')) {
+            var again = focusedKey && UI.children(row).filter(function (t) { return t._item.key === focusedKey; })[0];
+            if (again) UI.focusOn(again); else UI.refresh();
+        }
+    }
+
+    function refreshPlex() {
+        if (!Plex.enabled()) return;
+        Plex.load().then(renderPlex, function (err) {
+            log('Plex: ' + DevLog.errorText(err));
+        });
+    }
+
+    function openPlex(item) {
+        runLogged('Plex: ' + item.label, Apps.launch(Plex.appId())).catch(function (err) {
+            UI.toast('Could not open Plex: ' + DevLog.errorText(err));
+        });
+    }
+
+    // ---------- Art Mode (The Frame)
+
+    // Samsung does not document how to enter Art Mode from an app. 'org.tizen.art-app' is known
+    // to open the Art app; the others are guesses for this firmware. The tile tries each in turn
+    // and remembers the first that launches. Lab → "Find Art Mode apps" lists real candidates.
+    var ART = { kind: 'art', label: 'Art Mode', brand: { bg: '#3a3127', fg: '#f1e6d2', text: 'ART' } };
+    var ART_PREF = 'arn0.artAppId';
+
+    function artCandidates() {
+        var list = (cfg.artMode && cfg.artMode.appIds) || ['org.tizen.art-app'];
+        var known = null;
+        try { known = localStorage.getItem(ART_PREF); } catch (e) { /* none remembered */ }
+        return known ? [known].concat(list.filter(function (id) { return id !== known; })) : list;
+    }
+
+    function tryLaunch(ids, i) {
+        if (i >= ids.length) return Promise.reject(new Error('none of ' + ids.join(', ') + ' would open'));
+        return Apps.launch(ids[i]).then(function () { return ids[i]; }, function (err) {
+            log('Art Mode: ' + ids[i] + ' failed: ' + DevLog.errorText(err));
+            return tryLaunch(ids, i + 1);
+        });
+    }
+
+    function openArt() {
+        runLogged('Art Mode', tryLaunch(artCandidates(), 0)).then(function (id) {
+            log('Art Mode opened with ' + id);
+            try { localStorage.setItem(ART_PREF, id); } catch (e) { /* not remembered */ }
+        }).catch(function (err) {
+            UI.toast('Could not open Art Mode: ' + DevLog.errorText(err));
+        });
+    }
+
+    function labFindArt() {
+        runLogged('Art Mode candidates', Apps.getInstalledApps()).then(function (apps) {
+            var hits = apps.filter(function (a) { return /art|ambient|frame|gallery/i.test(a.id + ' ' + (a.name || '')); });
+            hits.forEach(function (a) { log('  ' + a.id + '  "' + (a.name || '') + '"' + (a.show ? '' : '  (hidden)')); });
+            UI.toast(hits.length + ' possible Art Mode apps — see the log');
+        }).catch(function () {});
+    }
+
     var LIVE_TV = { kind: 'livetv', label: 'Live TV', brand: { bg: '#1d2b4a', fg: '#fff', text: 'LIVE TV' } };
 
     function openLiveTv() {
@@ -179,6 +281,7 @@
         var items = homeItems();
         if (!items.length) items = Apps.allSorted(state.apps, false).slice(0, 8);
         if (cfg.liveTv) row.appendChild(appTile(LIVE_TV));
+        if (cfg.artMode && cfg.artMode.tile !== false) row.appendChild(appTile(ART));
         items.forEach(function (item) { row.appendChild(appTile(item)); });
         row.appendChild(allAppsTile());
 
@@ -222,8 +325,13 @@
             { label: 'Send installed app list to log', run: labDumpApps },
             { label: 'Read inputs', run: labReadInputs },
             { label: 'Open Samsung TV viewer only', run: function () { runLogged('Open TV viewer', Inputs.openViewer()); } },
-            { label: 'Live TV: switch to aerial + viewer', run: openLiveTv }
+            { label: 'Live TV: switch to aerial + viewer', run: openLiveTv },
+            { label: 'Find Art Mode apps (writes ids to the log)', run: labFindArt }
         ];
+        // Kept near the top: the Lab list does not scroll, so later entries sit below the screen.
+        artCandidates().forEach(function (id) {
+            actions.push({ label: 'Art Mode: try ' + id, run: function () { runLogged('Launch ' + id, Apps.launch(id)).catch(function () {}); } });
+        });
         if (window.Sound) actions = actions.concat(Sound.actions());
         if (window.RenderProbe) actions = actions.concat(RenderProbe.actions());
         inputs().forEach(function (input) {
@@ -419,12 +527,16 @@
             startRow: 1,
             hints: [['OK', 'Open'], ['▲', 'Settings']],
             rows: function () {
-                return [[$('gear')], UI.children($('apps-row')), UI.children($('inputs-row'))];
+                var plexOn = !$('plex-section').classList.contains('hidden');
+                return [[$('gear')], UI.children($('apps-row')),
+                    plexOn ? UI.children($('plex-row')) : UI.children($('inputs-row'))];
             },
             activate: function (item) {
                 if (item.kind === 'app') launchApp(item);
                 else if (item.kind === 'all') UI.show('all');
                 else if (item.kind === 'livetv') openLiveTv();
+                else if (item.kind === 'plex') openPlex(item);
+                else if (item.kind === 'art') openArt();
                 else if (item.kind === 'input') openInput(item);
                 else if (item.kind === 'settings') UI.show('settings');
             },
@@ -472,8 +584,11 @@
         var cached = readCache();
         if (cached && cached.length) setApps(cached);
         else renderHome();
+        if (Plex.enabled()) renderPlex(Plex.cached());
         UI.show('home');
         Wallpaper.start();
+        Weather.init();
+        setTimeout(refreshPlex, cached ? 2500 : 500);
 
         document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
@@ -482,6 +597,8 @@
             }
             updateClock();
             refreshInputStatus();
+            // Back from Plex (or anything): progress has probably moved.
+            setTimeout(refreshPlex, 800);
             if (UI.isVisible('home')) Wallpaper.homeShown();
             if (Date.now() - state.lastFetch > REFRESH_AFTER_MS) setTimeout(loadApps, 1500);
         });
