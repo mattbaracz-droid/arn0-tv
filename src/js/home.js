@@ -328,7 +328,6 @@
             { label: 'Live TV: switch to aerial + viewer', run: openLiveTv },
             { label: 'Find Art Mode apps (writes ids to the log)', run: labFindArt }
         ];
-        // Kept near the top: the Lab list does not scroll, so later entries sit below the screen.
         artCandidates().forEach(function (id) {
             actions.push({ label: 'Art Mode: try ' + id, run: function () { runLogged('Launch ' + id, Apps.launch(id)).catch(function () {}); } });
         });

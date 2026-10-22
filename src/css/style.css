@@ -771,11 +771,17 @@ h1, h2 {
 
 /* ---------- Lab ---------- */
 
-.lab-list {
+/* The list scrolls inside this window (UI.ensureVisible moves .vtrack), level with the log. */
+.lab-port {
     position: absolute;
     top: 220px;
+    bottom: 120px;
     left: var(--edge);
     width: 860px;
+    overflow: hidden;
+}
+
+.lab-list {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -787,6 +793,9 @@ h1, h2 {
     border-radius: 10px;
     font-size: 26px;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lab-list li.focused {
