@@ -24,12 +24,14 @@ window.LAUNCHER_CONFIG = {
     ],
 
     // Weather beside the date (Open-Meteo, free, no key). null hides it.
+    // Put your own location in js/config.local.js rather than here.
     weather: { latitude: -33.87, longitude: 151.21 },
 
     /*
      * Plex "Continue watching" row (On Deck from your Plex Media Server). Leave server or token
      * empty to hide it. server: 'http://<server-ip>:32400'. token: your X-Plex-Token — in Plex
      * Web, open any item, ⋯ → Get Info → View XML; the token is at the end of that page's URL.
+     * Set server and token in js/config.local.js, never here: the token opens your Plex server.
      */
     plex: { server: '', token: '', appId: 'kIciSQlYEM.plex', max: 12 },
 

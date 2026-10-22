@@ -57,3 +57,6 @@ native-snapshot.json
 .AppleDouble
 .Spotlight-V100
 .Trashes
+
+# personal settings: location, Plex token (see src/js/config.local.example.js)
+src/js/config.local.js
