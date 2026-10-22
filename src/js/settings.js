@@ -132,7 +132,12 @@
 
         var photos = $('bg-photos');
         photos.innerHTML = '';
-        Wallpaper.list().forEach(function (w) {
+        // The page does not scroll: show three rows (newest first) plus the chosen one.
+        var all = Wallpaper.list();
+        var shown = all.slice(0, THUMB_COLS * 3);
+        var chosen = all.filter(function (w) { return w.key === p.photo; })[0];
+        if (chosen && shown.indexOf(chosen) < 0) shown[shown.length - 1] = chosen;
+        shown.forEach(function (w) {
             var t = el('div', 'thumb' + (p.photo === w.key ? ' on' : ''));
             var img = new Image();
             img.src = w.thumb;

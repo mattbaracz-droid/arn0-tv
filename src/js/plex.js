@@ -111,7 +111,67 @@
         });
     }
 
+    // ---------- Photos library as wallpapers
+
+    var PHOTOS_KEY = 'arn0.plexPhotos.v1';
+
+    function photosCfg() {
+        return (window.LAUNCHER_CONFIG || {}).photos || null;
+    }
+
+    function photosConfigured() {
+        var pc = photosCfg();
+        return configured() && !!(pc && pc.library);
+    }
+
+    // Finds the Photos library by name, then lists every photo in it (albums included).
+    function fetchPhotos() {
+        var pc = photosCfg();
+        var want = String(pc.library).toLowerCase();
+        return get('/library/sections').then(function (d) {
+            var dirs = (d.MediaContainer && d.MediaContainer.Directory) || [];
+            var lib = dirs.filter(function (x) { return x.type === 'photo' && String(x.title).toLowerCase() === want; })[0];
+            if (!lib) throw new Error('no Photos library called "' + pc.library + '"');
+            return get('/library/sections/' + lib.key + '/all?type=13&sort=addedAt:desc');
+        }).then(function (d) {
+            var list = (d.MediaContainer && d.MediaContainer.Metadata) || [];
+            return list.slice(0, pc.max || 200).map(function (m) {
+                var part = m.Media && m.Media[0] && m.Media[0].Part && m.Media[0].Part[0];
+                var src = (part && part.key) || m.thumb;
+                return {
+                    key: 'plex-' + m.ratingKey,
+                    title: m.title || 'Photo',
+                    // minSize=1 fills the 1920x1080 box; CSS crops the rest (cover).
+                    file: image(src, 1920, 1080),
+                    thumb: image(m.thumb || src, 320, 180),
+                    credit: '',
+                    scrim: true
+                };
+            }).filter(function (w) { return w.file; });
+        });
+    }
+
+    function cachedPhotos() {
+        try {
+            return JSON.parse(localStorage.getItem(PHOTOS_KEY)) || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // Resolves to the photo list; on failure the cached list stays in use.
+    function loadPhotos() {
+        if (!photosConfigured()) return Promise.resolve([]);
+        return fetchPhotos().then(function (list) {
+            try { localStorage.setItem(PHOTOS_KEY, JSON.stringify(list)); } catch (e) { /* no cache */ }
+            return list;
+        });
+    }
+
     window.Plex = {
+        photosEnabled: photosConfigured,
+        cachedPhotos: function () { return photosConfigured() ? cachedPhotos() : []; },
+        loadPhotos: loadPhotos,
         enabled: function () { return configured() || !!window.__TIZEN_MOCK__; },
         appId: function () { return (cfg && cfg.appId) || 'kIciSQlYEM.plex'; },
         cached: function () { return configured() ? readCache() : (window.__TIZEN_MOCK__ ? sample() : []); },

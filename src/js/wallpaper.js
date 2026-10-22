@@ -12,8 +12,33 @@
     ];
 
     var token = 0;
+    var SCRIM = 'img/scrim.png';
 
-    function list() { return window.WALLPAPERS || []; }
+    // Photos from a Plex library (js/config.local.js → photos) replace the bundled set once
+    // there are any; config photos.includeBundled keeps both.
+    var plexPhotos = [];
+
+    function list() {
+        var bundled = window.WALLPAPERS || [];
+        if (!plexPhotos.length) return bundled;
+        var pc = (window.LAUNCHER_CONFIG || {}).photos || {};
+        return pc.includeBundled ? plexPhotos.concat(bundled) : plexPhotos;
+    }
+
+    function setPlexPhotos(photos) {
+        var before = plexPhotos.map(function (w) { return w.key; }).join(',');
+        plexPhotos = photos || [];
+        if (plexPhotos.map(function (w) { return w.key; }).join(',') === before) return;
+        DevLog.log('Wallpapers: ' + plexPhotos.length + ' photos from Plex');
+        apply();
+    }
+
+    function refreshPlexPhotos() {
+        if (!window.Plex || !Plex.photosEnabled()) return;
+        Plex.loadPhotos().then(setPlexPhotos, function (err) {
+            DevLog.log('Plex photos: ' + DevLog.errorText(err));
+        });
+    }
 
     function find(key) {
         return list().find(function (w) { return w.key === key; }) || list()[0] || null;
@@ -36,7 +61,11 @@
         }
         var img = new Image();
         img.onload = function () {
-            if (t === token) bg().style.backgroundImage = 'url("' + w.file + '")';
+            if (t !== token) return;
+            // Library photos have no scrim baked in, so a pre-rendered one is layered on top:
+            // one extra still image, unlike a live gradient, which this TV draws very slowly.
+            var url = 'url("' + w.file + '")';
+            bg().style.backgroundImage = w.scrim ? 'url("' + SCRIM + '"), ' + url : url;
         };
         img.onerror = function () { DevLog.log('Wallpaper failed to load: ' + w.file); };
         img.src = w.file;
@@ -73,8 +102,14 @@
     }
 
     function start() {
+        if (window.Plex && Plex.photosEnabled()) plexPhotos = Plex.cachedPhotos();
         apply();
         homeShown();
+        setTimeout(refreshPlexPhotos, 3000);
+        setInterval(refreshPlexPhotos, 60 * 60 * 1000);
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) setTimeout(refreshPlexPhotos, 1500);
+        });
         // The screen saver has its own photo cycle and covers Home completely, so rotating
         // underneath it would only decode images nobody can see — and move the photo Home
         // comes back to.
@@ -92,6 +127,7 @@
         apply: apply,
         next: next,
         homeShown: homeShown,
-        start: start
+        start: start,
+        refreshPlexPhotos: refreshPlexPhotos
     };
 })();
