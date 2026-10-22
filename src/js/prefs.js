@@ -34,7 +34,9 @@
                 locale: cfg.locale || 'en-GB',
                 font: 'manrope',        // see Appearance.FONTS
                 names: 'always',        // app names under tiles: 'always' | 'focused' | 'never'
-                santa: cfg.santaCountdown !== false   // Santa countdown pill on Home
+                santa: cfg.santaCountdown !== false,  // Santa countdown pill on Home
+                liveTv: cfg.liveTv !== false,         // Live TV tile at the start of the apps row
+                artTile: !!(cfg.artMode && cfg.artMode.tile)   // Art Mode tile (off unless config turns it on)
             },
             home: null,                 // [{ id, label, brand }] once edited; null = config.js apps
             inputs: null                // [{ hdmi, label, brand, method, hidden }] once edited; null = config.js

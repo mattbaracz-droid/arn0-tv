@@ -79,13 +79,41 @@
 
     var renderOverview = function () {};
 
-    // One press flips it; the row stays focused so it can be flipped back.
-    function toggleSanta() {
+    // ---------- Home extras: optional pieces of the Home screen
+
+    var EXTRAS = [
+        { title: 'Live TV tile', key: 'liveTv' },
+        { title: 'Art Mode tile', key: 'artTile' },
+        { title: 'Santa countdown', key: 'santa' }
+    ];
+
+    function extrasSummary() {
         var a = Prefs.get().appearance;
-        a.santa = !a.santa;
+        var on = EXTRAS.filter(function (x) { return a[x.key]; }).map(function (x) { return x.title.replace(' tile', ''); });
+        return on.length ? on.join(' · ') : 'None';
+    }
+
+    function renderExtras() {
+        var a = Prefs.get().appearance;
+        var body = $('extras-body');
+        body.innerHTML = '';
+        EXTRAS.forEach(function (x) {
+            var block = el('div', 'setting-block');
+            block.appendChild(el('h2', '', x.title));
+            var chips = el('div', 'chips');
+            chips.appendChild(chip('On', !!a[x.key], { key: x.key, value: true }));
+            chips.appendChild(chip('Off', !a[x.key], { key: x.key, value: false }));
+            block.appendChild(chips);
+            body.appendChild(block);
+        });
+    }
+
+    function activateExtras(item) {
+        Prefs.get().appearance[item.key] = item.value;
         Prefs.save();
         Home.updateClock();
-        renderOverview();
+        Home.renderHome();
+        renderExtras();
         UI.refresh();
     }
 
@@ -97,7 +125,7 @@
             { label: 'Apps on Home', value: Home.homeItems().length + ' apps', run: function () { UI.show('homeapps'); } },
             { label: 'Consoles', value: shown + ' on Home', run: function () { UI.show('consoles'); } },
             { label: 'Appearance', value: Appearance.font(a.font).label + ' · ' + (a.clock === '12h' ? '12-hour' : '24-hour'), run: function () { UI.show('appearance'); } },
-            { label: 'Santa countdown', value: a.santa ? 'On' : 'Off', run: toggleSanta },
+            { label: 'Home extras', value: extrasSummary(), run: function () { UI.show('extras'); } },
             { label: 'Navigation sound', value: soundSummary(), run: function () { UI.show('sound-settings'); } },
             { label: 'Screen saver', value: screensaverSummary(), run: function () { UI.show('screensaver-settings'); } },
             { label: 'Samsung Home', value: 'Smart Hub and TV settings', run: openSamsungHome },
@@ -671,6 +699,14 @@
             rows: function () { return chipRows($('appearance-body')); },
             onShow: renderAppearance,
             activate: activateAppearance,
+            hints: [['OK', 'Select'], ['Back', 'Settings']]
+        });
+
+        UI.register('extras', {
+            el: $('extras'),
+            rows: function () { return chipRows($('extras-body')); },
+            onShow: renderExtras,
+            activate: activateExtras,
             hints: [['OK', 'Select'], ['Back', 'Settings']]
         });
 

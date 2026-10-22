@@ -19,6 +19,9 @@ window.BRANDS = [
     { key: 'tf1', match: /tf1/i, text: 'TF1+', bg: 'linear-gradient(135deg,#071a4d,#1d4ed8)', fg: '#fff' },
     { key: 'crunchyroll', match: /crunchyroll/i, mark: 'crunchyroll', bg: '#f47521', fg: '#fff' },
 
+    // Launcher's own tiles
+    { key: 'livetv', mark: 'livetv', bg: 'linear-gradient(135deg,#0b5e57,#14a38f)', fg: '#fff', pad: [20, 30] },
+
     // Consoles (used by inputs in config.js)
     { key: 'playstation', mark: 'playstation', bg: 'linear-gradient(135deg,#00205c,#0070d1)', fg: '#fff' },
     { key: 'xbox', mark: 'xbox', bg: 'linear-gradient(135deg,#0a3a0a,#16a016)', fg: '#fff' },

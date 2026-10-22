@@ -266,7 +266,7 @@
         }).catch(function () {});
     }
 
-    var LIVE_TV = { kind: 'livetv', label: 'Live TV', brand: { bg: '#1d2b4a', fg: '#fff', text: 'LIVE TV' } };
+    var LIVE_TV = { kind: 'livetv', label: 'Live TV', brand: findBrand('livetv') };
 
     function openLiveTv() {
         UI.toast('Switching to Live TV…');
@@ -280,8 +280,10 @@
         row.innerHTML = '';
         var items = homeItems();
         if (!items.length) items = Apps.allSorted(state.apps, false).slice(0, 8);
-        if (cfg.liveTv) row.appendChild(appTile(LIVE_TV));
-        if (cfg.artMode && cfg.artMode.tile !== false) row.appendChild(appTile(ART));
+        // Settings → Home extras turns these on and off.
+        var extras = Prefs.get().appearance;
+        if (extras.liveTv) row.appendChild(appTile(LIVE_TV));
+        if (extras.artTile) row.appendChild(appTile(ART));
         items.forEach(function (item) { row.appendChild(appTile(item)); });
         row.appendChild(allAppsTile());
 
@@ -632,6 +634,7 @@
         refreshInputStatus: refreshInputStatus,
         renderLab: renderLab,
         updateClock: updateClock,
+        renderHome: renderHome,
         reloadApps: loadApps,
         miniTile: miniTile,
         miniInputTile: miniInputTile,

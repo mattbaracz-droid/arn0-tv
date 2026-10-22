@@ -40,10 +40,11 @@ window.LAUNCHER_CONFIG = {
      * Use Lab → "Find Art Mode apps" to see what this TV actually has, then put the right id first.
      */
     artMode: {
+        tile: false,   // default only; Settings → Home extras turns the tile on/off
         appIds: ['org.tizen.art-app', 'com.samsung.tv.art-app', 'com.samsung.tv.ambient-support']
     },
 
-    // Santa countdown pill on Home (sleeps till Christmas). Settings → Santa countdown turns it on/off.
+    // Santa countdown pill on Home (sleeps till Christmas). Settings → Home extras turns it on/off.
     santaCountdown: true,
 
     // Live TV tile at the start of the apps row: switches to the aerial and opens Samsung's viewer.
