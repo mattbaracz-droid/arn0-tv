@@ -18,7 +18,9 @@
  * worth having, measure it first — the probe is in the Lab screen.
  *
  * This engine lacks `inset`, `aspect-ratio`, `overflow: clip`, the individual transform
- * properties, `color-mix()`, container queries and `:has()`. Grid, gap, sticky and `clamp()` work.
+ * properties, `color-mix()`, container queries and `:has()`. Grid, grid gaps, sticky and `clamp()` work.
+ * Tizen 5.5 (2020 Frame) runs an older Chromium with no flexbox `gap` (Chrome 84+), so flex
+ * containers space their children with sibling margins instead.
  */
 @font-face {
     font-family: "Manrope";
@@ -786,7 +788,6 @@ html.preview, html.preview body {
     right: var(--edge);
     bottom: 48px;
     display: flex;
-    gap: 40px;
     font-size: 22px;
     color: #a3a8b3;
 }
@@ -796,7 +797,6 @@ html.preview, html.preview body {
 .hint {
     display: flex;
     align-items: center;
-    gap: 12px;
 }
 
 .hint-key {
@@ -838,7 +838,6 @@ html.preview, html.preview body {
     top: 420px;
     left: var(--edge);
     display: flex;
-    gap: 36px;
 }
 
 .probe-tile {
@@ -923,7 +922,6 @@ html.preview, html.preview body {
     position: absolute;
     display: flex;
     align-items: baseline;
-    gap: 22px;
     transition: transform 1200ms ease-out;
 }
 
@@ -954,3 +952,9 @@ html.preview, html.preview body {
     opacity: 0;
     transition: opacity 10000ms linear;
 }
+
+/* Flexbox spacing without `gap`, for Tizen 5.5's older engine. */
+.hints > * + * { margin-left: 40px; }
+.hint > * + * { margin-left: 12px; }
+.probe-row > * + * { margin-left: 36px; }
+.ss-clock > * + * { margin-left: 22px; }
