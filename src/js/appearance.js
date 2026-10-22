@@ -43,6 +43,24 @@
         }
     }
 
+    // Santa countdown, counted in sleeps (nights) to Christmas morning, local time.
+    // Returns { n, title, sub }; after Christmas Day it counts to next year's.
+    function santa(d) {
+        var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        var year = today.getMonth() === 11 && today.getDate() > 25 ? today.getFullYear() + 1 : today.getFullYear();
+        var xmas = new Date(year, 11, 25);
+        var sleeps = Math.round((xmas - today) / 86400000);
+        if (sleeps === 0) return { n: '', title: 'Merry Christmas!', sub: 'Santa\u2019s been!' };
+        if (sleeps === 1) return { n: '', title: 'Santa comes tonight!', sub: 'Christmas Eve \u00b7 off to bed early' };
+        var day = '';
+        try {
+            day = xmas.toLocaleDateString(prefs().locale, { weekday: 'short' }) + ' 25 Dec';
+        } catch (e) {
+            day = '25 Dec';
+        }
+        return { n: String(sleeps), title: 'sleeps till Santa', sub: 'Christmas Day \u00b7 ' + day };
+    }
+
     function apply() {
         var p = prefs();
         document.documentElement.style.setProperty('--font', font(p.font).family + FALLBACK);
@@ -58,6 +76,7 @@
         font: font,
         time: time,
         date: date,
+        santa: santa,
         apply: apply
     };
 })();

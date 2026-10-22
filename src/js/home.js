@@ -444,6 +444,15 @@
         $('time-main').textContent = t.time;
         $('time-suffix').textContent = t.suffix;
         $('date').textContent = Appearance.date(d);
+        var pill = $('santa');
+        var on = Prefs.get().appearance.santa;
+        pill.classList.toggle('hidden', !on);
+        if (on) {
+            var x = Appearance.santa(d);
+            $('santa-n').textContent = x.n;
+            $('santa-t').textContent = x.title;
+            $('santa-s').textContent = x.sub;
+        }
     }
 
     // The TV takes ~4 s to list its ~450 apps, so Home is drawn from the last list we saw

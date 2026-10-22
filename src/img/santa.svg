@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- hat, flopping to the right -->
+  <path d="M46 96 C50 52 84 26 124 26 C152 26 170 40 176 62 C164 54 150 54 140 60 C152 72 158 84 158 96 Z" fill="#d62839"/>
+  <path d="M120 30 C146 30 164 42 170 56 C160 52 150 52 141 57 C134 46 128 38 120 30 Z" fill="#b01e2f"/>
+  <circle cx="178" cy="66" r="13" fill="#fbfbf7"/>
+  <!-- face -->
+  <circle cx="100" cy="124" r="36" fill="#f6cba9"/>
+  <!-- beard -->
+  <path d="M60 118 C58 160 76 188 100 190 C124 188 142 160 140 118 C134 132 126 140 116 140 C110 148 90 148 84 140 C74 140 66 132 60 118 Z" fill="#fbfbf7"/>
+  <path d="M74 160 C82 176 92 182 100 183 C108 182 118 176 126 160 C118 170 108 175 100 175 C92 175 82 170 74 160 Z" fill="#e7e4dc"/>
+  <!-- cheeks -->
+  <circle cx="78" cy="126" r="8" fill="#ee8f8a" opacity="0.75"/>
+  <circle cx="122" cy="126" r="8" fill="#ee8f8a" opacity="0.75"/>
+  <!-- eyes, smiling -->
+  <path d="M83 114 Q88 108 93 114" stroke="#3a2622" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+  <path d="M107 114 Q112 108 117 114" stroke="#3a2622" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+  <!-- eyebrows -->
+  <path d="M80 104 Q88 97 96 102" stroke="#fbfbf7" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M104 102 Q112 97 120 104" stroke="#fbfbf7" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- moustache -->
+  <path d="M100 134 C92 126 80 126 70 136 C80 146 92 144 100 138 C108 144 120 146 130 136 C120 126 108 126 100 134 Z" fill="#fbfbf7"/>
+  <!-- nose -->
+  <circle cx="100" cy="127" r="7" fill="#e79a83"/>
+  <!-- smile peeking under moustache -->
+  <path d="M93 146 Q100 151 107 146" stroke="#b5463f" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- hat brim -->
+  <rect x="40" y="88" width="122" height="24" rx="12" fill="#fbfbf7"/>
+</svg>

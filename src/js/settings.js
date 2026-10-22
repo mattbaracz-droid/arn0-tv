@@ -77,6 +77,18 @@
         return w ? w.title : 'Photo';
     }
 
+    var renderOverview = function () {};
+
+    // One press flips it; the row stays focused so it can be flipped back.
+    function toggleSanta() {
+        var a = Prefs.get().appearance;
+        a.santa = !a.santa;
+        Prefs.save();
+        Home.updateClock();
+        renderOverview();
+        UI.refresh();
+    }
+
     function overviewEntries() {
         var a = Prefs.get().appearance;
         var shown = Home.inputs().filter(function (i) { return !i.hidden; }).length;
@@ -85,6 +97,7 @@
             { label: 'Apps on Home', value: Home.homeItems().length + ' apps', run: function () { UI.show('homeapps'); } },
             { label: 'Consoles', value: shown + ' on Home', run: function () { UI.show('consoles'); } },
             { label: 'Appearance', value: Appearance.font(a.font).label + ' · ' + (a.clock === '12h' ? '12-hour' : '24-hour'), run: function () { UI.show('appearance'); } },
+            { label: 'Santa countdown', value: a.santa ? 'On' : 'Off', run: toggleSanta },
             { label: 'Navigation sound', value: soundSummary(), run: function () { UI.show('sound-settings'); } },
             { label: 'Screen saver', value: screensaverSummary(), run: function () { UI.show('screensaver-settings'); } },
             { label: 'Samsung Home', value: 'Smart Hub and TV settings', run: openSamsungHome },
@@ -640,7 +653,7 @@
     // ---------- Registration
 
     function init() {
-        registerList('settings', overviewEntries, [['OK', 'Change'], ['Back', 'Home']]);
+        renderOverview = registerList('settings', overviewEntries, [['OK', 'Change'], ['Back', 'Home']]);
         registerList('advanced', advancedEntries, [['OK', 'Run'], ['Back', 'Settings']]);
         renderConsoles = registerList('consoles', consoleEntries,
             [['OK', 'Options'], ['Back', 'Settings']]);

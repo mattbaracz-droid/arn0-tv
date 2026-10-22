@@ -175,6 +175,52 @@ h1, h2 {
 .wx-range { margin-left: 18px; }
 .wx-text { margin-left: 18px; }
 
+/* Santa countdown: candy-cane pill left of the gear (Settings → Santa countdown turns it on/off). */
+.santa-pill {
+    position: absolute;
+    top: 104px;
+    right: 230px;
+    display: flex;
+    align-items: center;
+    height: 92px;
+    padding: 0 34px 0 12px;
+    border-radius: 46px;
+    background: #b3132b;
+    color: #fff;
+    box-shadow: 0 0 0 6px #fff, 0 0 0 12px #b3132b, 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.santa-pill.hidden { display: none; }
+
+.santa-pill img {
+    width: 104px;
+    height: 104px;
+    margin-top: -26px;
+    margin-right: 14px;
+}
+
+.santa-n {
+    margin-right: 14px;
+    font-size: 54px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.santa-n:empty { display: none; }
+
+.santa-t {
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.05;
+}
+
+.santa-t small {
+    display: block;
+    font-size: 21px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
 /* Appearance options */
 .no-date #date { display: none; }
 .names-never .app .label,
@@ -524,6 +570,15 @@ h1, h2 {
     font-size: 28px;
     font-weight: 500;
     color: var(--muted);
+}
+
+/* The main list has nine rows; slimmer rows keep them all above the remote hints. */
+#settings .settings-list { top: 214px; }
+
+#settings .setting-row {
+    padding: 14px 36px;
+    margin-bottom: 8px;
+    font-size: 34px;
 }
 
 .setting-row.focused {

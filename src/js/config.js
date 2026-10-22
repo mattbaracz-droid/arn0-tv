@@ -43,6 +43,9 @@ window.LAUNCHER_CONFIG = {
         appIds: ['org.tizen.art-app', 'com.samsung.tv.art-app', 'com.samsung.tv.ambient-support']
     },
 
+    // Santa countdown pill on Home (sleeps till Christmas). Settings → Santa countdown turns it on/off.
+    santaCountdown: true,
+
     // Live TV tile at the start of the apps row: switches to the aerial and opens Samsung's viewer.
     liveTv: true,
 

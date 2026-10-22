@@ -33,7 +33,8 @@
                 showDate: true,
                 locale: cfg.locale || 'en-GB',
                 font: 'manrope',        // see Appearance.FONTS
-                names: 'always'         // app names under tiles: 'always' | 'focused' | 'never'
+                names: 'always',        // app names under tiles: 'always' | 'focused' | 'never'
+                santa: cfg.santaCountdown !== false   // Santa countdown pill on Home
             },
             home: null,                 // [{ id, label, brand }] once edited; null = config.js apps
             inputs: null                // [{ hdmi, label, brand, method, hidden }] once edited; null = config.js
