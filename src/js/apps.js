@@ -8,7 +8,9 @@
     var NUMERIC_ID = /^\d{9,13}$/;
     var PRELOADED = [
         'org.tizen.netflix-app', 'org.tizen.primevideo', 'org.tizen.apple.apple-music',
-        'org.tizen.browser', 'com.samsung.tv.aria-video'
+        'org.tizen.browser', 'com.samsung.tv.aria-video',
+        // 2020 Frame (Tizen 5.5) ids differ from the Q70B's
+        'org.tizen.netflixapp', 'com.samsung.tv.ariavideo'
     ];
     var INTERNAL = [
         'adplatform.ADPlayer', 'WykOS4t4F0.cmsWebApp', '25emanual3.emanual',

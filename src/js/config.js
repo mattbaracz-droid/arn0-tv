@@ -13,14 +13,14 @@
  */
 window.LAUNCHER_CONFIG = {
     apps: [
-        { match: 'netflix', label: 'Netflix' },
-        { match: 'youtube', label: 'YouTube', brand: 'youtube' },
-        { match: 'plex', label: 'Plex', brand: 'plex' },
-        { match: 'disney', label: 'Disney+', brand: 'disneyplus' },
-        { match: 'prime ?video|primevideo', label: 'Prime Video' },
-        { match: 'iview', label: 'ABC iview' },
-        { match: 'sbs', label: 'SBS On Demand' },
-        { match: '^stan$|\.stan$', label: 'Stan' }
+        { id: 'org.tizen.netflixapp', label: 'Netflix' },
+        { id: '9Ur5IzDKqV.TizenYouTube', label: 'YouTube', brand: 'youtube' },
+        { id: 'kIciSQlYEM.plex', label: 'Plex', brand: 'plex' },
+        { id: 'MCmYXNxgcu.DisneyPlus', label: 'Disney+', brand: 'disneyplus' },
+        { id: 'org.tizen.primevideo', label: 'Prime Video' },
+        { id: 'mWK87Xghap.ABCiview', label: 'ABC iview' },
+        { id: 'OyE7OuxlUi.SBSOnDemand', label: 'SBS On Demand' },
+        { id: '73iTZRTc34.Stan', label: 'Stan' }
     ],
 
     // Nothing on HDMI on this TV, so the consoles row stays hidden.
