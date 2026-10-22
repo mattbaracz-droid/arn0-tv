@@ -326,7 +326,9 @@
             { label: 'Read inputs', run: labReadInputs },
             { label: 'Open Samsung TV viewer only', run: function () { runLogged('Open TV viewer', Inputs.openViewer()); } },
             { label: 'Live TV: switch to aerial + viewer', run: openLiveTv },
-            { label: 'Find Art Mode apps (writes ids to the log)', run: labFindArt }
+            { label: 'Find Art Mode apps (writes ids to the log)', run: labFindArt },
+            { label: 'Powerwall: test the bridge', run: function () { runLogged('Powerwall bridge', Energy.labBridge(log)).catch(function () {}); } },
+            { label: 'Powerwall: try the gateway directly', run: function () { runLogged('Powerwall gateway', Energy.labDirect(log)).catch(function () {}); } }
         ];
         artCandidates().forEach(function (id) {
             actions.push({ label: 'Art Mode: try ' + id, run: function () { runLogged('Launch ' + id, Apps.launch(id)).catch(function () {}); } });
@@ -596,6 +598,7 @@
         UI.show('home');
         Wallpaper.start();
         Weather.init();
+        Energy.init();
         setTimeout(refreshPlex, cached ? 2500 : 500);
 
         document.addEventListener('visibilitychange', function () {
